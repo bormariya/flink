@@ -30,13 +30,23 @@ under the License.
 		<relativePath>..</relativePath>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<artifactId>flink-connector-twitter_${scala.binary.version}</artifactId>
 	<name>flink-connector-twitter</name>
 
 	<packaging>jar</packaging>
 
 	<properties>
-		<hbc-core.version>2.2.0</hbc-core.version>
+		<hbc-core.version>master-SNAPSHOT</hbc-core.version>
 	</properties>
 
 	<dependencies>
@@ -47,10 +57,16 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>com.twitter</groupId>
-			<artifactId>hbc-core</artifactId>
+			<groupId>com.github.twitter</groupId>
+			<artifactId>hbc</artifactId>
 			<version>${hbc-core.version}</version>
 		</dependency>
+
+		<!--<dependency>-->
+		<!--<groupId>com.twitter</groupId>-->
+		<!--<artifactId>hbc-core</artifactId>-->
+		<!--<version>${hbc-core.version}</version>-->
+		<!--</dependency>-->
 	</dependencies>
 
 	<build>
@@ -95,7 +111,8 @@ under the License.
 								</relocation>
 							</relocations>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
 							</transformers>
 						</configuration>
 					</execution>
