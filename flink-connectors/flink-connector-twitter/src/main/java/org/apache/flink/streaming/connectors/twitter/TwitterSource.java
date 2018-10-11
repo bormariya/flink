@@ -129,7 +129,25 @@ public class TwitterSource extends RichSourceFunction<String> implements Stoppab
 			properties.getProperty(TOKEN_SECRET));
 
 		client = new ClientBuilder()
-			.proxy(properties.getProperty(CLIENT_HOSTS, Constants.STREAM_HOST), 0)
+			.name(properties.getProperty(CLIENT_NAME, "flink-twitter-source"))
+			.hosts(properties.getProperty(CLIENT_HOSTS, Constants.STREAM_HOST))
+			.endpoint(endpoint)
+			.authentication(auth)
+			.processor(new HosebirdMessageProcessor() {
+				public DelimitedStreamReader reader;
+
+				@Override
+				public void setup(InputStream input) {
+					reader = new DelimitedStreamReader(input, Constants.DEFAULT_CHARSET, Integer.parseInt(properties.getProperty(CLIENT_BUFFER_SIZE, "50000")));
+				}
+
+				@Override
+				public boolean process() throws IOException, InterruptedException {
+					String line = reader.readLine();
+					ctx.collect(line);
+					return true;
+				}
+			})
 			.build();
 
 		client.connect();
