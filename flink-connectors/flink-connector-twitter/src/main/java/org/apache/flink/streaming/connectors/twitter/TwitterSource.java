@@ -17,6 +17,8 @@
 
 package org.apache.flink.streaming.connectors.twitter;
 
+import com.twitter.hbc.common.DelimitedStreamReader;
+import com.twitter.hbc.core.processor.HosebirdMessageProcessor;
 import org.apache.flink.api.common.functions.StoppableFunction;
 import org.apache.flink.api.java.ClosureCleaner;
 import org.apache.flink.configuration.Configuration;
@@ -33,6 +35,8 @@ import com.twitter.hbc.httpclient.auth.OAuth1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Properties;
@@ -126,6 +130,24 @@ public class TwitterSource extends RichSourceFunction<String> implements Stoppab
 
 		client = new ClientBuilder()
 			.proxy(properties.getProperty(CLIENT_HOSTS, Constants.STREAM_HOST), 0)
+			.name(properties.getProperty(CLIENT_NAME, "flink-twitter-source"))
+			.endpoint(endpoint)
+			.authentication(auth)
+			.processor(new HosebirdMessageProcessor() {
+				public DelimitedStreamReader reader;
+
+				@Override
+				public void setup(InputStream input) {
+					reader = new DelimitedStreamReader(input, Constants.DEFAULT_CHARSET, Integer.parseInt(properties.getProperty(CLIENT_BUFFER_SIZE, "50000")));
+				}
+
+				@Override
+				public boolean process() throws IOException, InterruptedException {
+					String line = reader.readLine();
+					ctx.collect(line);
+					return true;
+				}
+			})
 			.build();
 
 		client.connect();
