@@ -17,8 +17,6 @@
 
 package org.apache.flink.streaming.connectors.twitter;
 
-import com.twitter.hbc.common.DelimitedStreamReader;
-import com.twitter.hbc.core.processor.HosebirdMessageProcessor;
 import org.apache.flink.api.common.functions.StoppableFunction;
 import org.apache.flink.api.java.ClosureCleaner;
 import org.apache.flink.configuration.Configuration;
@@ -26,9 +24,11 @@ import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
 import com.twitter.hbc.ClientBuilder;
+import com.twitter.hbc.common.DelimitedStreamReader;
 import com.twitter.hbc.core.Constants;
 import com.twitter.hbc.core.endpoint.StatusesSampleEndpoint;
 import com.twitter.hbc.core.endpoint.StreamingEndpoint;
+import com.twitter.hbc.core.processor.HosebirdMessageProcessor;
 import com.twitter.hbc.httpclient.BasicClient;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
