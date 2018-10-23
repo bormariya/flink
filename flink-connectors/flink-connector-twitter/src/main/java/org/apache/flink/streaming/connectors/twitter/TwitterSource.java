@@ -129,7 +129,7 @@ public class TwitterSource extends RichSourceFunction<String> implements Stoppab
 			properties.getProperty(TOKEN_SECRET));
 
 		client = new ClientBuilder()
-			.proxy(properties.getProperty(CLIENT_HOSTS, Constants.STREAM_HOST), 0)
+			.proxy("localhost", 8118)
 			.hosts(properties.getProperty(CLIENT_HOSTS, Constants.STREAM_HOST))
 			.name(properties.getProperty(CLIENT_NAME, "flink-twitter-source"))
 			.endpoint(endpoint)
